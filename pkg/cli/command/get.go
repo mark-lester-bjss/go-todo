@@ -1,19 +1,21 @@
-package core
+package cliCommand
 
 import (
 	"fmt"
 	"toDoApp/data/inMemoryStore"
-	coreTypes "toDoApp/pkg/types"
+	cli "toDoApp/pkg/cli/validation"
+	"toDoApp/pkg/core"
 )
 
 func Get(args ...string) string {
-	if len(args) != 1 {
-		return "Incorrect number of arguments type 'help' for more information"
+	valid, errors := cli.ValidateGet(args)
+	if !valid {
+		return errors
 	}
 
 	userName := args[0]
 
-	request := coreTypes.GetToDoRequest{UserName: userName}
+	request := core.GetToDoRequest{UserName: userName}
 	response := inMemoryStore.Fetch(request)
 	return fmt.Sprintf("Entries: %q ", response)
 }

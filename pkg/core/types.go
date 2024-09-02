@@ -1,4 +1,4 @@
-package coreTypes
+package core
 
 type ToDo struct {
 	Id          string

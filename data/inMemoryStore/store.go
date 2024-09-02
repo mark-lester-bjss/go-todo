@@ -1,25 +1,28 @@
 package inMemoryStore
 
 import (
-	coreTypes "toDoApp/pkg/types"
+	"fmt"
+	"toDoApp/pkg/core"
 )
+
+var pl = fmt.Println
 
 var store = make(map[string]ToDoRecords)
 
-func Fetch(request coreTypes.GetToDoRequest) coreTypes.GetToDoResponse {
-	response := coreTypes.GetToDoResponse{}
+func Fetch(request core.GetToDoRequest) core.GetToDoResponse {
+	response := core.GetToDoResponse{}
 	record, ok := store[request.UserName]
 
 	if ok {
 		for key, value := range record.Entries {
-			response.ToDos = append(response.ToDos, coreTypes.ToDo{Id: key, Instruction: value})
+			response.ToDos = append(response.ToDos, core.ToDo{Id: key, Instruction: value})
 		}
 	}
 	return response
 }
 
-func Create(request coreTypes.PostToDoRequest) coreTypes.PostToDoResponse {
-	response := coreTypes.PostToDoResponse{}
+func Create(request core.PostToDoRequest) core.PostToDoResponse {
+	response := core.PostToDoResponse{}
 	record, ok := store[request.UserName]
 
 	if ok {
@@ -30,44 +33,46 @@ func Create(request coreTypes.PostToDoRequest) coreTypes.PostToDoResponse {
 	return response
 }
 
-func addToExistingRecord(request coreTypes.PostToDoRequest, record ToDoRecords) coreTypes.PostToDoResponse {
+func addToExistingRecord(request core.PostToDoRequest, record ToDoRecords) core.PostToDoResponse {
 	for _, todo := range request.ToDos {
 		record.Entries[todo.Id] = todo.Instruction
 	}
-	return coreTypes.PostToDoResponse{ToDos: request.ToDos}
+	return core.PostToDoResponse{ToDos: request.ToDos}
 }
 
-func createNewRecord(request coreTypes.PostToDoRequest) coreTypes.PostToDoResponse {
+func createNewRecord(request core.PostToDoRequest) core.PostToDoResponse {
 	newRecord := ToDoRecords{make(map[string]string)}
 	for _, todo := range request.ToDos {
 		newRecord.Entries[todo.Id] = todo.Instruction
 	}
 	store[request.UserName] = newRecord
-	return coreTypes.PostToDoResponse{ToDos: request.ToDos}
+	return core.PostToDoResponse{ToDos: request.ToDos}
 }
 
-func Update(request coreTypes.PutToDoRequest) coreTypes.PutToDoResponse {
-	response := coreTypes.PutToDoResponse{}
+func Update(request core.PutToDoRequest) core.PutToDoResponse {
+	pl("Update request", request)
+	response := core.PutToDoResponse{}
 	record, ok := store[request.UserName]
 
 	if ok {
 		_, ok := record.Entries[request.ToDo.Id]
 		if ok {
 			record.Entries[request.ToDo.Id] = request.ToDo.Instruction
-			response = coreTypes.PutToDoResponse{ToDo: request.ToDo}
+			response = core.PutToDoResponse{ToDo: request.ToDo}
 		}
 	}
 	return response
 }
 
-func Delete(request coreTypes.DeleteToDoRequest) coreTypes.DeleteToDoResponse {
-	response := coreTypes.DeleteToDoResponse{}
+func Delete(request core.DeleteToDoRequest) core.DeleteToDoResponse {
+	pl("Delete request", request)
+	response := core.DeleteToDoResponse{}
 	record, ok := store[request.UserName]
 
 	if ok {
 		entry, ok := record.Entries[request.Id]
 		if ok {
-			response = coreTypes.DeleteToDoResponse{ToDo: coreTypes.ToDo{Id: request.Id, Instruction: entry}}
+			response = core.DeleteToDoResponse{ToDo: core.ToDo{Id: request.Id, Instruction: entry}}
 			delete(record.Entries, request.Id)
 		}
 	}

@@ -5,18 +5,18 @@ import (
 	"fmt"
 	"os"
 	"strings"
-	cli "toDoApp/pkg/cli"
-	core "toDoApp/pkg/core"
+	"toDoApp/pkg/cli"
+	cliCommand "toDoApp/pkg/cli/command"
 )
 
 var pl = fmt.Println
 
 func init() {
-	cli.RegisterCommand("add", core.Create)
-	cli.RegisterCommand("update", core.Update)
-	cli.RegisterCommand("get", core.Get)
-	cli.RegisterCommand("delete", core.Delete)
-	cli.RegisterCommand("help", core.Help)
+	cli.RegisterCommand("add", cliCommand.Create)
+	cli.RegisterCommand("update", cliCommand.Update)
+	cli.RegisterCommand("get", cliCommand.Get)
+	cli.RegisterCommand("delete", cliCommand.Delete)
+	cli.RegisterCommand("help", cliCommand.Help)
 }
 
 func main() {
@@ -27,7 +27,7 @@ func main() {
 		fmt.Print("todo app: ")
 		cliParams, _ = reader.ReadString('\n')
 		uiMessage := cli.ExecuteCommand(removeNewLine(cliParams))
-		pl("Please read: ", uiMessage)
+		pl(uiMessage)
 	}
 }
 
