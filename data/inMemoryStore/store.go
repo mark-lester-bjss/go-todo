@@ -3,14 +3,15 @@ package inMemoryStore
 import (
 	"fmt"
 	"toDoApp/pkg/core"
+
+	"github.com/google/uuid"
 )
 
 var pl = fmt.Println
 
 var store = make(map[string]ToDoRecords)
 
-func Fetch(request core.GetToDoRequest) core.GetToDoResponse {
-	response := core.GetToDoResponse{}
+func Fetch(request core.GetToDoRequest) (response core.GetToDoResponse) {
 	record, ok := store[request.UserName]
 
 	if ok {
@@ -21,8 +22,7 @@ func Fetch(request core.GetToDoRequest) core.GetToDoResponse {
 	return response
 }
 
-func Create(request core.PostToDoRequest) core.PostToDoResponse {
-	response := core.PostToDoResponse{}
+func Create(request core.PostToDoRequest) (response core.PostToDoResponse) {
 	record, ok := store[request.UserName]
 
 	if ok {
@@ -33,25 +33,33 @@ func Create(request core.PostToDoRequest) core.PostToDoResponse {
 	return response
 }
 
+func createTodosArray(strings []string) (todos []core.ToDo) {
+	for i := 0; i < len(strings); i++ {
+		todo := core.ToDo{Id: uuid.New().String(), Instruction: strings[i]}
+		todos = append(todos, todo)
+	}
+	return todos
+}
+
 func addToExistingRecord(request core.PostToDoRequest, record ToDoRecords) core.PostToDoResponse {
-	for _, todo := range request.ToDos {
+	todoArray := createTodosArray(request.ToDos)
+	for _, todo := range todoArray {
 		record.Entries[todo.Id] = todo.Instruction
 	}
-	return core.PostToDoResponse{ToDos: request.ToDos}
+	return core.PostToDoResponse{ToDos: todoArray}
 }
 
 func createNewRecord(request core.PostToDoRequest) core.PostToDoResponse {
+	todoArray := createTodosArray(request.ToDos)
 	newRecord := ToDoRecords{make(map[string]string)}
-	for _, todo := range request.ToDos {
+	for _, todo := range todoArray {
 		newRecord.Entries[todo.Id] = todo.Instruction
 	}
 	store[request.UserName] = newRecord
-	return core.PostToDoResponse{ToDos: request.ToDos}
+	return core.PostToDoResponse{ToDos: todoArray}
 }
 
-func Update(request core.PutToDoRequest) core.PutToDoResponse {
-	pl("Update request", request)
-	response := core.PutToDoResponse{}
+func Update(request core.PutToDoRequest) (response core.PutToDoResponse) {
 	record, ok := store[request.UserName]
 
 	if ok {
@@ -64,9 +72,7 @@ func Update(request core.PutToDoRequest) core.PutToDoResponse {
 	return response
 }
 
-func Delete(request core.DeleteToDoRequest) core.DeleteToDoResponse {
-	pl("Delete request", request)
-	response := core.DeleteToDoResponse{}
+func Delete(request core.DeleteToDoRequest) (response core.DeleteToDoResponse) {
 	record, ok := store[request.UserName]
 
 	if ok {

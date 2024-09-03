@@ -15,7 +15,7 @@ type GetToDoResponse struct {
 
 type PostToDoRequest struct {
 	UserName string
-	ToDos    []ToDo
+	ToDos    []string
 }
 
 type PostToDoResponse struct {
