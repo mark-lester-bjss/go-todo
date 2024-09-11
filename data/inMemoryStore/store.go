@@ -9,9 +9,11 @@ import (
 
 var pl = fmt.Println
 
+type InMemoryStore struct{}
+
 var store = make(map[string]ToDoRecords)
 
-func Fetch(request core.GetToDoRequest) (response core.GetToDoResponse) {
+func (i InMemoryStore) Fetch(request core.GetToDoRequest) (response core.GetToDoResponse) {
 	record, ok := store[request.UserName]
 
 	if ok {
@@ -22,7 +24,7 @@ func Fetch(request core.GetToDoRequest) (response core.GetToDoResponse) {
 	return response
 }
 
-func Create(request core.PostToDoRequest) (response core.PostToDoResponse) {
+func (i InMemoryStore) Create(request core.PostToDoRequest) (response core.PostToDoResponse) {
 	record, ok := store[request.UserName]
 
 	if ok {
@@ -59,26 +61,26 @@ func createNewRecord(request core.PostToDoRequest) core.PostToDoResponse {
 	return core.PostToDoResponse{ToDos: todoArray}
 }
 
-func Update(request core.PutToDoRequest) (response core.PutToDoResponse) {
+func (i InMemoryStore) Update(request core.PutToDoRequest) (response core.PutToDoResponse) {
 	record, ok := store[request.UserName]
 
 	if ok {
 		_, ok := record.Entries[request.ToDo.Id]
 		if ok {
 			record.Entries[request.ToDo.Id] = request.ToDo.Instruction
-			response = core.PutToDoResponse{ToDo: request.ToDo}
+			response = core.PutToDoResponse{ToDos: []core.ToDo{request.ToDo}}
 		}
 	}
 	return response
 }
 
-func Delete(request core.DeleteToDoRequest) (response core.DeleteToDoResponse) {
+func (i InMemoryStore) Delete(request core.DeleteToDoRequest) (response core.DeleteToDoResponse) {
 	record, ok := store[request.UserName]
 
 	if ok {
 		entry, ok := record.Entries[request.Id]
 		if ok {
-			response = core.DeleteToDoResponse{ToDo: core.ToDo{Id: request.Id, Instruction: entry}}
+			response = core.DeleteToDoResponse{ToDos: []core.ToDo{{Id: request.Id, Instruction: entry}}}
 			delete(record.Entries, request.Id)
 		}
 	}

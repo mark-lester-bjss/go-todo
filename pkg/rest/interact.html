@@ -1,0 +1,62 @@
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title> TODO app</title>
+</head>
+
+<body>
+  <<h1>TODO</h1>
+  <p> Hello what do you want to do? </p>
+  <a href="http://localhost:8080/home">Get your todos</a>
+
+  <h1>TODO create</h1>
+  <form action="/create" method="POST">
+    <div>
+      userName
+      <input type="text" name="userName">
+      instruction
+      <input type="text" name="instruction">
+    </div>
+    <div>
+      <input type="submit">
+    </div>
+  </form>
+
+  <h1>TODO update</h1>
+  <form action="/update" method="POST">
+    <div>
+      userName
+      <input type="text" name="userName">
+      id
+      <input type="text" name="id">
+      instruction
+      <input type="text" name="instruction">
+    </div>
+    <div>
+      <input type="submit">
+    </div>
+  </form>
+
+  <h1>TODO delete</h1>
+  <form action="/delete" method="POST">
+    <div>
+      userName
+      <input type="text" name="userName">
+      id
+      <input type="text" name="id">
+    </div>
+    <div>
+      <input type="submit">
+    </div>
+  </form>
+
+  <h1>Request response</h1>
+  <div>
+    {{range .ToDos}}
+      <p>{{.Id}} - {{.Instruction}}</p>
+    {{end}}
+  </div>
+
+</html>

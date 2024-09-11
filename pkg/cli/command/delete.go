@@ -2,12 +2,12 @@ package cliCommand
 
 import (
 	"fmt"
-	"toDoApp/data/inMemoryStore"
+	"toDoApp/data/database"
 	cliValidate "toDoApp/pkg/cli/validation"
 	"toDoApp/pkg/core"
 )
 
-func Delete(args ...string) string {
+func Delete(database database.ToDoDataStore, args ...string) string {
 	valid, errors := cliValidate.ValidateDelete(args)
 	if !valid {
 		return errors
@@ -18,6 +18,6 @@ func Delete(args ...string) string {
 
 	request := core.DeleteToDoRequest{UserName: userName, Id: id}
 	pl("Delete request", request)
-	response := inMemoryStore.Delete(request)
+	response := database.Delete(request)
 	return fmt.Sprintf("Deleted: %q", response)
 }
