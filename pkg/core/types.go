@@ -28,7 +28,7 @@ type PutToDoRequest struct {
 }
 
 type PutToDoResponse struct {
-	ToDo ToDo
+	ToDos []ToDo
 }
 
 type DeleteToDoRequest struct {
@@ -37,5 +37,9 @@ type DeleteToDoRequest struct {
 }
 
 type DeleteToDoResponse struct {
-	ToDo ToDo
+	ToDos []ToDo
+}
+
+type ToDoRequest interface {
+	GetToDoRequest | PostToDoRequest | PutToDoRequest | DeleteToDoRequest
 }

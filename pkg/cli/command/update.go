@@ -3,14 +3,14 @@ package cliCommand
 import (
 	"fmt"
 	"strings"
-	"toDoApp/data/inMemoryStore"
+	"toDoApp/data/database"
 	cli "toDoApp/pkg/cli/validation"
 	"toDoApp/pkg/core"
 )
 
 var pl = fmt.Println
 
-func Update(args ...string) string {
+func Update(database database.ToDoDataStore, args ...string) string {
 
 	valid, errors := cli.ValidateUpdate(args)
 	if !valid {
@@ -24,6 +24,6 @@ func Update(args ...string) string {
 		UserName: userName,
 		ToDo:     core.ToDo{Id: todo[0], Instruction: todo[1]}}
 	pl("Update request", request)
-	response := inMemoryStore.Update(request)
+	response := database.Update(request)
 	return fmt.Sprintln("Updated: ", response)
 }

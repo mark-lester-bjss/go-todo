@@ -1,0 +1,33 @@
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title> TODO app</title>
+</head>
+
+<body>
+  <h1>TODO</h1>
+  <a href="http://localhost:8080/interact">Add, update and delete todos</a>
+
+  <h1>TODO fetch</h1>
+  <form action="/fetch" method="POST">
+    <div>
+      userName
+      <input type="text" name="userName">
+    </div>
+    <div>
+      <input type="submit">
+    </div>
+  </form>
+
+  <h1>TODO requested</h1>
+  <div>
+    {{range .ToDos}}
+      <p>{{.Id}} - {{.Instruction}}</p>
+    {{end}}
+  </div>
+</body>
+</body>
+
+</html>
